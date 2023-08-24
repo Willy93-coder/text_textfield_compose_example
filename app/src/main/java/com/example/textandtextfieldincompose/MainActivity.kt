@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -35,7 +36,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MyTextField()
+                    var myText by remember {
+                        mutableStateOf("")
+                    }
+                    Column(Modifier.fillMaxSize()) {
+                        MyOutlinedTextField(myText) { myText = it }
+                    }
                 }
             }
         }
@@ -44,11 +50,38 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun MyOutlinedTextField(name: String, onValueChanged: (String) -> Unit) {
+    OutlinedTextField(value = name, onValueChange = { onValueChanged(name) })
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun MyTextField() {
     var myText by remember {
         mutableStateOf("")
     }
-    TextField(value = myText, onValueChange = { myText = it })
+    TextField(
+        value = myText,
+        onValueChange = { myText = it },
+        label = { Text(text = "Introduce tu nombre") })
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyTextFieldAdvance() {
+    var myText by remember {
+        mutableStateOf("")
+    }
+    TextField(
+        value = myText,
+        onValueChange = {
+            myText = if (it.contains("a")) {
+                it.replace("a", "")
+            } else {
+                it
+            }
+        },
+        label = { Text(text = "Introduce tu nombre") })
 }
 
 
@@ -101,6 +134,6 @@ fun MyText() {
 @Composable
 fun GreetingPreview() {
     TextAndTextfieldInComposeTheme {
-        MyText()
+        MyTextFieldAdvance()
     }
 }
